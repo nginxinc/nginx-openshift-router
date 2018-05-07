@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Route
+metadata:
+  name: coffee-route
+spec:
+  host: cafe.example.com
+  path: "/coffee"
+  to:
+    kind: Service
+    name: coffee-svc 
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+    key: |-
+      -----BEGIN RSA PRIVATE KEY-----
+      MIIEowIBAAKCAQEAo/ln2tuM7Awn0HSNQG2H0aNtpYwuKq8bPIeEr8XmhDMpI/wS
+      aWs1vrr0gbKvl+OKeWQ8ZAaVq4HyCBJmzosglFICGlGR8pjKfF7uTVdt7S+c0qoW
+      eUrfXJzsSjGAVFqfbGVRHMtIDy04N2t+yBHHN7c+/YVvvOHj6Cg3c9sbiFZS1rWt
+      1H8noso6NLFiIZ6EsRn3HYADrRLsG1aeIt2iTkMd4ARpvfoZpeFaphP4QYMq/XSb
+      UVDWO3sPH7ItlAlozgUdRIKsQb7NK+MKfmZnbRtrqn5CZntzretgHdtt8yWB5E+M
+      a0rkU/1XyYJ7/cyf7k7cKRbFZgQq9RKXu5l8ZQIDAQABAoIBAG/qN+H+W054dWwn
+      QIkquLpyqtGEvbXQUeycKgm2LsEoEfpHf2GIFOSawWsMRCCM4uQ7b6RtghXO2Rx9
+      QsHR32icGGdSKSTE996vBEKxW4u5JXX7NN+QJKcXS4bQBmCMgab/976JWCNTn7zj
+      l2KCD9CNN2bdfggSvPSlDkP61e3UtWJFmqU3OILD/8OWcxsM6GOE/fQLWcsFOoi8
+      qhtS5K2VOU3DWovnyyGm15+p9ZgFioob4t0pQlFT742vOEimKFihf1Nm4fS4b6S6
+      1jxiDJx9IhOkI9ubuWz5lbELgmNqL22u5lZVVHVuo/4f+Bpew9rWHEV0l2/Wrr33
+      Pc/CFvkCgYEA00eZ/4/1QH5UWK+Fbd41xS3On8iRA4I/uH97SOxg1XtIbJwS+xbl
+      cJbP9pN0R8s9vR0jOpihcyObGUTvZi+6Y4DW0o5G20n31YUf3ByOZAvJDDaKy7k9
+      gaaMx+zpIBGDa83kzzF+vHRoUA73GBLTF7dc1eZyLNyhVZA2uxczEycCgYEAxq6C
+      9PTTih39hLb2akSH5alVnJOv4sVKAcVpeFqA93KxNmqYEWcR9uu7nYUFpasIapfW
+      I8NXT0DRPyMNYCgwedJoMyCDR7olsjjT8diq9ziP+XXoOdz28tZlUjoS6x22WmaY
+      9bfqnDjkfqoYnYmSZfI7hvpsHSoPLfaD3OB4u5MCgYBhRpAyyDck8IUpJ/cI9MxQ
+      8pw1mQSbVva7nYZHtv2GjPJ1fw6GKK6OvgEWCCH7hCnyzl2P9wIunvAkHEcVB1iL
+      w6Ak5XjeMho3ZsmacFNm4L46L0qMLceRz/r1ebCEIUwe8Hcuph0x626znZBKtzAV
+      tUi6+xUKbrKhUHrCfRX49QKBgDm3LDe4f1MaDzFkbQTFz6x5mnMXu/pmUW9eR5s8
+      v0YivTQPlwlHJcLTC/dgUxmjK5i7buuIrW5KZ/6tUg9i3WImKzre8QP/IUA6necd
+      h9y1Q622ALX+aIZ2nYxbbm96fCSatUh8Gt0y8b2R8ACjnDGdQomdaZa3Rx2VBQ0+
+      8BOdAoGBAIiKGQ7TMQJlFN6C6TPNBpGxKc+IxCWQQ/NyzOIpG0skEuERat4/Wa2V
+      thIqFEwKLj31FIRF/vXbBfpNMGiJ8/jwqdu+maq36k9zm0zd87bd8Klb/AyNRUl/
+      JGQl1usEqyN/q5GnMt14aC5GdeHSjVx2O3Yfl+Gf5aHDnfIB8AvE
+      -----END RSA PRIVATE KEY-----
+    certificate: |-
+      -----BEGIN CERTIFICATE-----
+      MIIEDzCCAvegAwIBAgIJAPZ+V80VswZPMA0GCSqGSIb3DQEBBQUAMGIxCzAJBgNV
+      BAYTAkdCMRMwEQYDVQQIEwpTb21lLVN0YXRlMSEwHwYDVQQKExhJbnRlcm5ldCBX
+      aWRnaXRzIFB0eSBMdGQxGzAZBgNVBAMTEmNvZmZlZS5leGFtcGxlLmNvbTAeFw0x
+      ODAyMTExODQ3NTlaFw0xOTAyMTExODQ3NTlaMGIxCzAJBgNVBAYTAkdCMRMwEQYD
+      VQQIEwpTb21lLVN0YXRlMSEwHwYDVQQKExhJbnRlcm5ldCBXaWRnaXRzIFB0eSBM
+      dGQxGzAZBgNVBAMTEmNvZmZlZS5leGFtcGxlLmNvbTCCASIwDQYJKoZIhvcNAQEB
+      BQADggEPADCCAQoCggEBAKP5Z9rbjOwMJ9B0jUBth9GjbaWMLiqvGzyHhK/F5oQz
+      KSP8EmlrNb669IGyr5fjinlkPGQGlauB8ggSZs6LIJRSAhpRkfKYynxe7k1Xbe0v
+      nNKqFnlK31yc7EoxgFRan2xlURzLSA8tODdrfsgRxze3Pv2Fb7zh4+goN3PbG4hW
+      Uta1rdR/J6LKOjSxYiGehLEZ9x2AA60S7BtWniLdok5DHeAEab36GaXhWqYT+EGD
+      Kv10m1FQ1jt7Dx+yLZQJaM4FHUSCrEG+zSvjCn5mZ20ba6p+QmZ7c63rYB3bbfMl
+      geRPjGtK5FP9V8mCe/3Mn+5O3CkWxWYEKvUSl7uZfGUCAwEAAaOBxzCBxDAdBgNV
+      HQ4EFgQU0M65EFHhDuPVV/V3f6arkNmcxZAwgZQGA1UdIwSBjDCBiYAU0M65EFHh
+      DuPVV/V3f6arkNmcxZChZqRkMGIxCzAJBgNVBAYTAkdCMRMwEQYDVQQIEwpTb21l
+      LVN0YXRlMSEwHwYDVQQKExhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQxGzAZBgNV
+      BAMTEmNvZmZlZS5leGFtcGxlLmNvbYIJAPZ+V80VswZPMAwGA1UdEwQFMAMBAf8w
+      DQYJKoZIhvcNAQEFBQADggEBAGB6xTSX4DiLasEs2qNGlINHvE+yvCJxtbuatl7B
+      v0cPJb7Icgmnp8NGtUHY8+nvDxXWMzBteMhHrRzNdod+hynyg1xeiNZPkJzMkH3p
+      leZ+odVWYjG8Kq+cK1VLDylS+pAwnPFfkJ9MJvif4PRIB9lsCwP6WNOK9UswiGrM
+      rtviB/6vlbzG5iGAyBrCLh8dOCeeQ2w2hHVfJ27j6GAqhVzy9NBM03Y4Tr5d7h1r
+      5AbnOmLR4D24ZJr9w7avHm5NYiKjw9gVqL9arHUTJHlqV0ngSZ35e0XUlcMt32xP
+      9hkMA8IeqiDTQiv4X961Ey+SVrIYCpuw/RrC/jX9raLWWfg=
+      -----END CERTIFICATE-----

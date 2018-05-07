@@ -1,0 +1,3 @@
+# NGINX Plus license files
+*.crt
+*.key

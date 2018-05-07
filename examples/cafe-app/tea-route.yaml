@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Route
+metadata:
+  name: tea-route
+spec:
+  host: cafe.example.com
+  path: "/tea"
+  to:
+    kind: Service
+    name: tea-svc 
