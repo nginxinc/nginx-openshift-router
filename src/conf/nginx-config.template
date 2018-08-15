@@ -10,10 +10,10 @@
 {{ $logLevel := firstMatch "info|notice|warn|error|crit|alert|emerg" (env "ROUTER_LOG_LEVEL") "warn" }}
 worker_processes  auto;
 {{ with $syslogAddress := env "ROUTER_SYSLOG_ADDRESS" }}
-error_log syslog:server={{ $syslogAddress }},facility={{env "ROUTER_LOG_FACILITY" "local1"}} {{ $logLevel }}; 
+error_log syslog:server={{ $syslogAddress }},facility={{env "ROUTER_LOG_FACILITY" "local1"}} {{ $logLevel }};
 {{ else }}
 error_log  /var/lib/nginx/log/error.log {{ $logLevel }};
-{{ end }} 
+{{ end }}
 pid        /var/lib/nginx/run/nginx.pid;
 worker_rlimit_nofile 8192;
 worker_shutdown_timeout {{ env "ROUTER_DEFAULT_TUNNEL_TIMEOUT" "1h" }};
@@ -68,20 +68,16 @@ http {
 {{- if eq (env "ROUTER_CIPHERS" "intermediate") "modern" }}
   # Modern cipher suite (no legacy browser support) from https://wiki.mozilla.org/Security/Server_Side_TLS
   ssl_ciphers ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256;
-{{ else }}
-  {{- if eq (env "ROUTER_CIPHERS" "intermediate") "intermediate" }}
+{{- else if eq (env "ROUTER_CIPHERS" "intermediate") "intermediate" }}
   # Intermediate cipher suite (default) from https://wiki.mozilla.org/Security/Server_Side_TLS
   ssl_ciphers ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:ECDHE-ECDSA-DES-CBC3-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA:!DSS;
-  {{ else }}
-    {{- if eq (env "ROUTER_CIPHERS" "intermediate") "old" }}
+{{- else if eq (env "ROUTER_CIPHERS" "intermediate") "old" }}
   # Old cipher suite (maximum compatibility but insecure) from https://wiki.mozilla.org/Security/Server_Side_TLS
   ssl_ciphers ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:ECDHE-RSA-DES-CBC3-SHA:ECDHE-ECDSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:DES-CBC3-SHA:HIGH:SEED:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!RSAPSK:!aDH:!aECDH:!EDH-DSS-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA:!SRP;
-    {{- else }}
+{{- else }}
   # user provided list of ciphers (Colon separated list as seen above)
   # the env default is not used here since we can't get here with empty ROUTER_CIPHERS
   ssl_ciphers {{env "ROUTER_CIPHERS" "ECDHE-ECDSA-CHACHA20-POLY1305"}};
-    {{- end }}
-  {{- end }}
 {{- end }}
 
   map $http_upgrade $connection_upgrade {
@@ -139,23 +135,24 @@ http {
 {{ end }}
 
     server_name _;
-    
+
     ssl_certificate {{ printf "%s/tls.crt" (env "DEFAULT_CERTIFICATE_DIR" "/etc/pki/tls/private") }};
     ssl_certificate_key {{ printf "%s/tls.key" (env "DEFAULT_CERTIFICATE_DIR" "/etc/pki/tls/private") }};
 
-    error_page 503 /error-page-503.html; 
+    error_page 503 /error-page-503.html;
 
     location / {
       return 503;
     }
-    
+
     location = /error-page-503.html {
       root /var/lib/nginx/conf;
     }
   }
 
 {{- range $cfgHost, $configs := $httpAliases }}
-  {{ range $cfg := $configs }}
+  {{- range $cfg := $configs }}
+    {{- if not (and (firstMatch "tcp|udp" (index $cfg.Annotations "nginx.router.openshift.io/protocol")) (isInteger (index $cfg.Annotations "nginx.router.openshift.io/port"))) }}
   upstream be_{{$cfg.Namespace}}_{{$cfg.Name}} {
       {{ with $balanceAlgo := firstMatch "round_robin|least_conn|ip_hash" (index $cfg.Annotations "nginx.router.openshift.io/balance") (env "ROUTER_LOAD_BALANCE_ALGORITHM") }}
         {{ if ne $balanceAlgo "round_robin" }}
@@ -165,7 +162,7 @@ http {
     zone {{$cfg.Namespace}}_{{$cfg.Name}} 64k;
       {{ if gt $cfg.ActiveEndpoints 0 }}
         {{- range $serviceUnitName, $weight := $cfg.ServiceUnitNames }}
-        # endpoints of {{$serviceUnitName}} 
+        # endpoints of {{$serviceUnitName}}
           {{- with $serviceUnit := index $.ServiceUnits $serviceUnitName }}
             {{- range $idx, $endpoint := endpointsForAlias $cfg $serviceUnit }}
     server {{$endpoint.IP}}:{{$endpoint.Port}} weight={{$weight}};
@@ -181,17 +178,19 @@ http {
         {{ end }}
       {{ end }}
     }
+    {{ end }}
   {{ end }}
 
   {{ $primaryCfgIdx := getPrimaryAliasKey $configs }}
   {{ $primaryCfg := index $configs $primaryCfgIdx }}
+  {{- if not (and (firstMatch "tcp|udp" (index $primaryCfg.Annotations "nginx.router.openshift.io/protocol")) (isInteger (index $primaryCfg.Annotations "nginx.router.openshift.io/port"))) }}
 
-  # the primary route is {{ $primaryCfgIdx }} 
+  # the primary route is {{ $primaryCfgIdx }}
   server {
     {{ if or (eq $primaryCfg.TLSTermination "") (or (eq $primaryCfg.InsecureEdgeTerminationPolicy "Allow") (eq $primaryCfg.InsecureEdgeTerminationPolicy "Redirect")) }}
     listen {{env "ROUTER_SERVICE_HTTP_PORT" "80"}}{{ if isTrue (env "ROUTER_USE_PROXY_PROTOCOL") }} proxy_protocol{{ end }};
     {{ end }}
-  
+
     server_name {{genCertificateHostName $cfgHost $primaryCfg.IsWildcard }};
 
     status_zone {{$cfgHost}};
@@ -249,7 +248,7 @@ http {
             {{ else }}
       grpc_ssl_verify off;
             {{ end }}
-        {{ end }}
+          {{ end }}
       grpc_pass      grpcs://be_{{$cfg.Namespace}}_{{$cfg.Name}};
         {{ else }}
       grpc_pass      grpc://be_{{$cfg.Namespace}}_{{$cfg.Name}};
@@ -263,7 +262,7 @@ http {
           {{ with $keepalive := (index $cfg.Annotations "nginx.router.openshift.io/keepalive") }}
             {{ if and (isInteger $keepalive) (ne $keepalive "0") }}
       proxy_set_header Connection "";
-           {{ end }}
+            {{ end }}
           {{ end }}
         {{ end }}
 
@@ -286,7 +285,7 @@ http {
             {{ else }}
       proxy_ssl_verify off;
             {{ end }}
-        {{ end }}
+          {{ end }}
       proxy_pass      https://be_{{$cfg.Namespace}}_{{$cfg.Name}};
         {{ else }}
       proxy_pass      http://be_{{$cfg.Namespace}}_{{$cfg.Name}};
@@ -296,6 +295,7 @@ http {
     }
     {{ end }}
   }
+  {{ end -}}
 {{ end -}}
 }
 
@@ -314,10 +314,39 @@ stream {
                      '$protocol $status $bytes_sent $bytes_received '
                      '$session_time "$ssl_preread_server_name" $dest_internal_passthrough"';
   {{ end }}
+  {{ with $format := env "ROUTER_SYSLOG_FORMAT_FOR_TCP_UDP" }}
+  log_format stream '{{ $format }}';
+  {{ else }}
+  log_format stream '$remote_addr [$time_local] '
+                     '$protocol $status $bytes_sent $bytes_received '
+                     '$session_time "$upstream_addr"';
+  {{ end }}
 
   proxy_timeout {{ env "ROUTER_DEFAULT_CLIENT_TIMEOUT" "30s" }};
   proxy_connect_timeout {{ env "ROUTER_DEFAULT_CONNECT_TIMEOUT" "5s" }};
   map_hash_bucket_size 256;
+
+  # Prevent vulnerability to POODLE attacks (CVE‑2014‑3566) - omit SSLv3
+  ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+
+  # The default cipher suite can be selected from the three sets recommended by https://wiki.mozilla.org/Security/Server_Side_TLS,
+  # or the user can provide one using the ROUTER_CIPHERS environment variable.
+  # By default when a cipher set is not provided, intermediate is used.
+{{- if eq (env "ROUTER_CIPHERS" "intermediate") "modern" }}
+  # Modern cipher suite (no legacy browser support) from https://wiki.mozilla.org/Security/Server_Side_TLS
+  ssl_ciphers ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256;
+{{- else if eq (env "ROUTER_CIPHERS" "intermediate") "intermediate" }}
+  # Intermediate cipher suite (default) from https://wiki.mozilla.org/Security/Server_Side_TLS
+  ssl_ciphers ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:ECDHE-ECDSA-DES-CBC3-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA:!DSS;
+{{- else if eq (env "ROUTER_CIPHERS" "intermediate") "old" }}
+  # Old cipher suite (maximum compatibility but insecure) from https://wiki.mozilla.org/Security/Server_Side_TLS
+  ssl_ciphers ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:ECDHE-RSA-DES-CBC3-SHA:ECDHE-ECDSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:DES-CBC3-SHA:HIGH:SEED:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!RSAPSK:!aDH:!aECDH:!EDH-DSS-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA:!SRP;
+{{- else }}
+  # user provided list of ciphers (Colon separated list as seen above)
+  # the env default is not used here since we can't get here with empty ROUTER_CIPHERS
+  ssl_ciphers {{env "ROUTER_CIPHERS" "ECDHE-ECDSA-CHACHA20-POLY1305"}};
+{{- end }}
+
 
   upstream https-route {
     server 127.0.0.1:{{env "ROUTER_SERVICE_SNI_PORT" "10444"}};
@@ -326,12 +355,13 @@ stream {
   map $ssl_preread_server_name $dest_passthrough {
   {{- range $cfgIdx, $cfg := .State }}
     {{ if eq $cfg.TLSTermination "passthrough" }}
-    {{ $cfg.Host }} 127.0.0.1:{{ env "ROUTER_SERVICE_INTERNAL_PASSTHROUGH_PORT" "10447" }}; 
+    {{ $cfg.Host }} 127.0.0.1:{{ env "ROUTER_SERVICE_INTERNAL_PASSTHROUGH_PORT" "10447" }};
     {{ end }}
   {{ end }}
     default https-route;
   }
 
+  # passthrough routes
   server {
     listen {{ $passthroughPort }}{{ if isTrue (env "ROUTER_USE_PROXY_PROTOCOL") }} proxy_protocol{{ end }};
     {{ with $syslogAddress := env "ROUTER_SYSLOG_ADDRESS" }}
@@ -348,6 +378,7 @@ stream {
     {{ end }}
   }
 
+  # passthrough upstreams
   {{- range $cfgIdx, $cfg := .State }}
     {{ if eq $cfg.TLSTermination "passthrough" }}
   upstream be_passthrough_{{$cfg.Namespace}}_{{$cfg.Name}} {
@@ -377,7 +408,7 @@ stream {
   map $ssl_preread_server_name $dest_internal_passthrough {
   {{- range $cfgIdx, $cfg := .State }}
     {{ if eq $cfg.TLSTermination "passthrough" }}
-    {{ $cfg.Host }} be_passthrough_{{$cfg.Namespace}}_{{$cfg.Name}}; 
+    {{ $cfg.Host }} be_passthrough_{{$cfg.Namespace}}_{{$cfg.Name}};
     {{ end }}
   {{ end }}
     default 127.0.0.1:{{env "ROUTER_SERVICE_UNREACHABLE_PORT" "10446"}};
@@ -397,5 +428,91 @@ stream {
     status_zone internal_passthrough;
     proxy_pass $dest_internal_passthrough;
   }
+
+  # TCP/UDP upstreams
+{{- range $cfgIdx, $cfg := .State }}
+  {{- with $streamProtocol := firstMatch "tcp|udp" (index $cfg.Annotations "nginx.router.openshift.io/protocol") }}
+    {{- with $streamPort := index $cfg.Annotations "nginx.router.openshift.io/port" }}
+      {{- if isInteger $streamPort }}
+        {{ if not (firstMatch (index $cfg.Annotations "nginx.router.openshift.io/port") (env "ROUTER_SERVICE_HTTPS_PORT" "443") (env "ROUTER_SERVICE_PASSTHROUGH_PORT" "443") (env "ROUTER_SERVICE_HTTP_PORT" "80") (env "ROUTER_SERVICE_SNI_PORT" "10444") (env "ROUTER_SERVICE_503_SERVER_PORT" "10445") (env "ROUTER_SERVICE_UNREACHABLE_PORT" "10446") (env "ROUTER_SERVICE_INTERNAL_PASSTHROUGH_PORT" "10447") "1936") }}
+  upstream be_stream_{{$cfg.Namespace}}_{{$cfg.Name}} {
+          {{ with $balanceAlgo := firstMatch "round_robin|least_conn|ip_hash" (index $cfg.Annotations "nginx.router.openshift.io/balance") (env "ROUTER_TCP_BALANCE_SCHEME") }}
+            {{ if eq $balanceAlgo "ip_hash" }}
+    hash $remote_addr consistent;
+            {{ else if ne $balanceAlgo "round_robin" }}
+    {{ $balanceAlgo }};
+            {{ end }}
+          {{ end }}
+    zone stream_{{$cfg.Namespace}}_{{$cfg.Name}} 64k;
+          {{ if gt $cfg.ActiveEndpoints 0 }}
+            {{- range $serviceUnitName, $weight := $cfg.ServiceUnitNames }}
+              {{- with $serviceUnit := index $.ServiceUnits $serviceUnitName }}
+                {{- range $idx, $endpoint := endpointsForAlias $cfg $serviceUnit }}
+    server {{$endpoint.IP}}:{{$endpoint.Port}};
+                {{ end -}}
+              {{ end -}}
+            {{ end -}}
+          {{ end }}
+  }
+
+    # tcp/udp server
+  server {
+          {{- if eq $streamProtocol "tcp" }}
+            {{- if (or (eq $cfg.TLSTermination "edge") (eq $cfg.TLSTermination "reencrypt")) }}
+              {{ $cert := index $cfg.Certificates $cfg.Host -}}
+              {{ if ne $cert.Contents "" }}
+    ssl_certificate     {{$workingDir}}/certs/{{$cfgIdx}}.pem;
+    ssl_certificate_key {{$workingDir}}/certs/{{$cfgIdx}}.pem;
+              {{ else }}
+    ssl_certificate {{ printf "%s/tls.crt" (env "DEFAULT_CERTIFICATE_DIR" "/etc/pki/tls/private") }};
+    ssl_certificate_key {{ printf "%s/tls.key" (env "DEFAULT_CERTIFICATE_DIR" "/etc/pki/tls/private") }};
+              {{ end }}
+    listen {{ $streamPort }} ssl{{ if isTrue (env "ROUTER_USE_PROXY_PROTOCOL") }} proxy_protocol{{ end }};
+            {{ else }}
+    listen {{ $streamPort }}{{ if isTrue (env "ROUTER_USE_PROXY_PROTOCOL") }} proxy_protocol{{ end }};
+            {{ end }}
+
+            {{ if eq $cfg.TLSTermination "reencrypt" }}
+    proxy_ssl on;
+            {{ with $ssl_name := index $cfg.Annotations "nginx.router.openshift.io/proxy_ssl_name" }}
+    proxy_ssl_name {{ $ssl_name }};
+            {{ else }}
+    proxy_ssl_name {{ $cfg.Host }};
+            {{ end }}
+              {{- if gt (len (index $cfg.Certificates (printf "%s_pod" $cfg.Host)).Contents) 0 }}
+    proxy_ssl_trusted_certificate {{ $workingDir }}/cacerts/{{$cfgIdx}}.pem;
+    proxy_ssl_verify on;
+              {{ else if gt (len $defaultDestinationCA) 0 }}
+    proxy_ssl_trusted_certificate {{ $defaultDestinationCA }};
+    proxy_ssl_verify on;
+              {{ else }}
+    proxy_ssl_verify off;
+              {{ end }}
+            {{ end }}
+            {{ if isTrue (env "ROUTER_USE_PROXY_PROTOCOL") }}
+    set_real_ip_from {{ env "ROUTER_PROXY_PROTOCOL_TRUSTED_SOURCE" "0.0.0.0/0" }};
+            {{ end }}
+          {{ else }}
+    listen {{ $streamPort }} udp;
+
+            {{- with $proxyResponses := index $cfg.Annotations "nginx.router.openshift.io/responses" }}
+              {{- if isInteger $proxyResponses }}
+    proxy_responses {{ $proxyResponses}};
+              {{ end -}}
+            {{ end -}}
+          {{ end -}}
+          {{ with $syslogAddress := env "ROUTER_SYSLOG_ADDRESS" }}
+    access_log syslog:server={{ $syslogAddress }},facility={{env "ROUTER_LOG_FACILITY" "local1"}},severity={{ $logLevel }} stream;
+          {{ else }}
+    access_log /var/lib/nginx/log/stream_access.log stream;
+          {{ end }}
+    status_zone {{$streamPort}}_{{$streamProtocol}}_{{$cfg.Name}};
+    proxy_pass be_stream_{{$cfg.Namespace}}_{{$cfg.Name}};
+  }
+        {{ end -}}
+      {{ end -}}
+    {{ end -}}
+  {{ end -}}
+{{ end }}
 }
 {{ end -}}{{/* end config file */}}
