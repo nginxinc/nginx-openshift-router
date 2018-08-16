@@ -4,3 +4,7 @@
 1. [Building the Router image](build-image.md)
 1. [Configuration](configuration.md)
 
+## Examples
+
+* [Cafe App](../examples/cafe-app/README.md)
+* [TCP/UDP Load Balancing](../examples/tcp-udp/README.md)

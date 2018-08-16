@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Route
+metadata: 
+  name: tcp-route
+  annotations:
+    nginx.router.openshift.io/protocol: tcp
+    nginx.router.openshift.io/port: "5353"
+spec:
+  host: 5353.tcp.nginx.router.openshift.io
+  to:
+    kind: Service
+    name: coredns
+  port:
+    targetPort: 5353
