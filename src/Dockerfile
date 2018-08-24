@@ -4,7 +4,7 @@
 # The standard name for this image is openshift/origin-nginx-plus-router
 #
 
-FROM openshift/origin-control-plane:v3.10.0
+FROM openshift/origin-cli:v3.11.0
 
 # Download certificate and key from the customer portal (https://cs.nginx.com)
 # and copy to the build context
