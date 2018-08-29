@@ -87,7 +87,7 @@ If you are using [Prometheus](https://prometheus.io/), you can deploy the [NGINX
     ```
     
     **Note**:
-    * Note: Your Prometheus must be configured to automatically discover targets through the annotations `prometheus.io/port` and `prometheus.io/scrape` applied to a service.
+    * Your Prometheus must be configured to automatically discover targets through the annotations `prometheus.io/port` and `prometheus.io/scrape` applied to a service.
     
 ## Uninstall the NGINX Router
 
