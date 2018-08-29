@@ -81,7 +81,7 @@ If you are using [Prometheus](https://prometheus.io/), you can deploy the [NGINX
     **Note**:
     * Change port 1936 in the patch command if the Router was configured to expose the status on a different port other than the default port 1936.
 
-2. Annotate the Router service to indicate to Prometheus to automatically scrap the metrics from the Router endpoints through port 9113:
+1. Annotate the Router service to indicate to Prometheus to automatically scrap the metrics from the Router endpoints through port 9113:
     ```
     $ oc annotate service router --overwrite prometheus.io/port=9113 prometheus.io/scrape=true
     ```
