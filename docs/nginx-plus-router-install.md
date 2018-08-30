@@ -22,7 +22,7 @@
 
 1. Back up the default Router config, in case it needs to be recreated:
     ```
-    $ oc adm router -o yaml >> default-router-backup.yaml
+    $ oc get -o yaml service/router dc/router clusterrolebinding/router-router-role serviceaccount/router > default-router-backup.yaml
     ```
 
 1. Delete the Router:
@@ -93,8 +93,7 @@ If you are using [Prometheus](https://prometheus.io/), you can deploy the [NGINX
     
 ## Uninstall the NGINX Plus Router
 
-* Back up and delete the NGINX Plus Router:
+* Delete the NGINX Plus Router:
     ```
-    $ oc adm router -o yaml >> nginx-plus-router-backup.yaml
-    $ oc delete -f nginx-plus-router-backup.yaml
+    $ oc delete service/router dc/router clusterrolebinding/router-router-role serviceaccount/router
     ```
