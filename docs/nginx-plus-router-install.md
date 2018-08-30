@@ -55,6 +55,42 @@
     ```
 1. Open your browser at `http://<node-ip>:1936/dashboard.html` to access the dashboard. 
 
+## 5. Support for Prometheus Monitoring
+
+If you are using [Prometheus](https://prometheus.io/), you can deploy the [NGINX Prometheus Exporter](https://github.com/nginxinc/nginx-prometheus-exporter) with the NGINX Plus Router to export the NGINX Plus metrics into Prometheus. To add the exporter to the Router:
+
+1. Patch the Router deployment configuration to add the exporter container to the Router pod:
+    ```
+    $ oc patch dc/router -p 'spec:
+      template:
+        spec:
+          containers:
+          - image: nginx/nginx-prometheus-exporter:0.1.0
+            name: nginx-prometheus-exporter
+            ports:
+            - name: prometheus
+              containerPort: 9113
+            args:
+              - -web.listen-address
+              - :9113
+              - -nginx.plus
+              - -nginx.scrape-uri
+              - http://127.0.0.1:1936/api'
+    ```
+    The exporter will make the metrics available on port 9113.
+    
+    **Note**:
+    * Change port 1936 in the patch command if the Router was configured to expose the status on a different port other than the default port 1936.
+
+1. Annotate the Router service to indicate to Prometheus to automatically scrape the metrics from the Router endpoints through port 9113:
+    ```
+    $ oc annotate service router --overwrite prometheus.io/port=9113 prometheus.io/scrape=true
+    ```
+    
+    **Note**:
+    * Your Prometheus must be configured to automatically discover targets through the annotations `prometheus.io/port` and `prometheus.io/scrape` applied to a service.
+    
+    
 ## Uninstall the NGINX Plus Router
 
 * Back up and delete the NGINX Plus Router:
