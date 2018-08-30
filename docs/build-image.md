@@ -27,7 +27,7 @@ Before you can build the image, make sure that the following software is install
 
 1. Build the image:
     ```
-    $ docker build -t nginx-plus-router:0.1 .
+    $ docker build -t nginx-plus-router:0.2 .
     ```
 
 ## Upload the Image to the OpenShift Private Registry
@@ -39,10 +39,10 @@ Before you can build the image, make sure that the following software is install
 
 1. Tag the image:
     ```
-    $ docker tag nginx-plus-router:0.1 docker-registry-default.router.default.svc.cluster.local/openshift/nginx-plus-router:0.1
+    $ docker tag nginx-plus-router:0.2 docker-registry-default.router.default.svc.cluster.local/openshift/nginx-plus-router:0.2
     ```
 
 1. Push the image to the registry:
     ```
-    $ docker push docker-registry-default.router.default.svc.cluster.local/openshift/nginx-plus-router:0.1
+    $ docker push docker-registry-default.router.default.svc.cluster.local/openshift/nginx-plus-router:0.2
     ```
