@@ -35,11 +35,11 @@
 
 1. Deploy the NGINX Router:
     ```
-    $ oc adm router router --images=<image> --type='' --selector='region=infra'
+    $ oc adm router router --images=<image> --type='' --selector='node-role.kubernetes.io/infra=true'
     ```
     **Note**: 
     * The `<image>` must point to the NGINX Router image in your registry.
-    * The selector parameter specifies a label selector for nodes where the Router will be deployed: `region=infra`. Use a selector that makes sense for your environment.
+    * The selector parameter specifies a label selector for nodes where the Router will be deployed: `node-role.kubernetes.io/infra=true`. Use a selector that makes sense for your environment.
 
 1. Run the following command to make sure that the Router pods are running:
     ```
