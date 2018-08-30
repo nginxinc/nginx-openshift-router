@@ -34,11 +34,11 @@
 
 1. Deploy the NGINX Plus Router:
     ```
-    $ oc adm router router --images=docker-registry.default.svc:5000/openshift/nginx-plus-router:0.1 --type='' --selector='node-role.kubernetes.io/infra=true'
+    $ oc adm router router --images=docker-registry.default.svc:5000/openshift/nginx-plus-router:0.2 --type='' --selector='node-role.kubernetes.io/infra=true'
     ```
 
     **Note**: 
-    * The NGINX Plus Router image must be stored in the `openshift` directory, with the name `nginx-plus-router:0.1`
+    * The NGINX Plus Router image must be stored in the `openshift` directory, with the name `nginx-plus-router:0.2`
     * The selector parameter specifies a label selector for nodes where the Router will be deployed: `node-role.kubernetes.io/infra=true`. Use a selector that makes sense for your environment.
 
 1. Run the following command to make sure that the Router pods are running:
