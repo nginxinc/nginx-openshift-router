@@ -18,6 +18,7 @@ NGINX Plus Router is built on top of OpenShift Template Router. Below are the ke
 * **NGINX Plus performance and stability.** With NGINX Plus Router you get the performance and reliability of NGINX Plus software.
 * **Latest NGINX Plus features.** We are also excited to bring our new features, such as native support for gRPC load balancing, into the OpenShift Router. As new features are made available in NGINX Plus, they can be incorporated into the Router’s capabilities. 
 * **Support for TCP/UDP load balancing.** NGINX Plus Router brings support for load balancing TCP/UDP applications, including supporting edge TLS termination and re-encryption for TCP, via a TCP/UDP load balancing [extension](docs/configuration.md/#tcpudp-load-balancing-extension).
+* **Support for Prometheus**. NGINX Plus Router can optionally expose metrics ready to be collected by [Prometheus](https://prometheus.io/).
 
 ## How To Get Started
 
