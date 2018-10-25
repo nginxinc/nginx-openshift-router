@@ -1,6 +1,6 @@
 # TCP/UDP Load Balancing Example
 
-In this example we deploy the NGINX Plus OpenShift Router, a DNS server and then configure both TCP and UDP load balancing for the DNS server using routes.
+In this example we deploy the NGINX OpenShift Router, a DNS server and then configure both TCP and UDP load balancing for the DNS server using routes.
 
 ## Prerequisites
 
@@ -11,9 +11,9 @@ In this example we deploy the NGINX Plus OpenShift Router, a DNS server and then
     $ sudo iptables -I OS_FIREWALL_ALLOW -p udp --dport 5353 -j ACCEPT
     ```
 
-## 1. Deploy the NGINX Plus Router
+## 1. Deploy the NGINX Router
 
-1. Follow the installation instructions for [NGINX Plus](../../docs/nginx-plus-router-install.md).
+1. Follow the installation instructions for [NGINX](../../docs/nginx-oss-router-install.md) or [NGINX Plus](../../docs/nginx-plus-router-install.md).
 
 1. Save the public IP address of the node where the Router is running into a shell variable:
     ```

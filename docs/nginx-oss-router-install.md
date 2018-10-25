@@ -1,10 +1,8 @@
 # Installing the NGINX Router
 
-**Note**: This page is temporary and will be removed in the future, as the documentation for NGINX Router will be made available through the OpenShift Origin official docs.
-
 ## Prerequisites 
 
-* Build the Router image and upload it to your private registry. The source files of the image are available in the [Origin repo](https://github.com/openshift/origin/tree/master/images/router/nginx).
+* Build the Router image and upload it to your private registry. Please see the instructions [here](build-oss-image.md).
 * It is important to upload the image to the private registry *before* deleting the default Router, as it will render the registry unavailable. 
 
 ## 1. Log into the OpenShift Cluster
@@ -35,10 +33,9 @@
 
 1. Deploy the NGINX Router:
     ```
-    $ oc adm router router --images=<image> --type='' --selector='node-role.kubernetes.io/infra=true'
+    $ oc adm router router --images=docker-registry.default.svc:5000/openshift/nginx-openshift-router:0.2 --type='' --selector='node-role.kubernetes.io/infra=true'
     ```
     **Note**: 
-    * The `<image>` must point to the NGINX Router image in your registry.
     * The selector parameter specifies a label selector for nodes where the Router will be deployed: `node-role.kubernetes.io/infra=true`. Use a selector that makes sense for your environment.
 
 1. Run the following command to make sure that the Router pods are running:

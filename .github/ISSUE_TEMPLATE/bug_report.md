@@ -17,9 +17,9 @@ Steps to reproduce the behavior:
 A clear and concise description of what you expected to happen.
 
 **Your environment**
-* NGINX Plus Router version
+* NGINX Router version
 * Openshift version
-* NGINX Plus version
+* NGINX or NGINX Plus version
 
 **Additional context**
 Add any other context about the problem here. Any log files you want to share.

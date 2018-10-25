@@ -1,12 +1,12 @@
-# NGINX Plus Router Configuration
+# The NGINX Router Configuration
 
-NGINX Plus Router can be customized using environment variables or annotations.
+The NGINX Router can be customized using environment variables or annotations.
 
 ## Environment Variables
 
-NGINX Plus Router supports the majority of the standard Router environment variables, described in [this document](https://docs.openshift.org/latest/architecture/networking/routes.html#env-variables).
+The NGINX Router supports the majority of the standard Router environment variables, described in [this document](https://docs.okd.io/latest/architecture/networking/routes.html#router-environment-variables).
 
-The NGINX Plus Router supports the following standard Router environment variables:
+The NGINX Router supports the following standard Router environment variables:
 * `DEFAULT_CERTIFICATE`
 * `EXTENDED_VALIDATION`
 * `NAMESPACE_LABELS`
@@ -63,7 +63,7 @@ The following standard environment variables are not available:
 * `ROUTER_STRICT_SNI`
 
 
-The NGINX Plus Router includes the following additional environment variables:
+The NGINX Router includes the following additional environment variables:
 * `ROUTER_SERVICE_UNREACHABLE_PORT`. For Routes with zero endpoints, the Router sends passthrough connections to `127.0.0.1:<ROUTER_SERVICE_UNREACHABLE_PORT>`. The Router assumes that nothing is running on that port. The default is `10446`.
 * `ROUTER_PROXY_PROTOCOL_TRUSTED_SOURCE`. Configures trusted sources of client connections when PROXY PROTOCOL is enabled (using `ROUTER_USE_PROXY_PROTOCOL` variable). The default is `0.0.0.0/0`, which means any source is trusted. Configure this variable with the value of the IP address or the subnet of outgoing connections of your external load balancer that uses PROXY PROTOCOL. When the load balancer is not trusted, the client IP address is not extracted using the PROXY PROTOCOL and the IP address of the load balancer is used as the client IP.
 * `ROUTER_SERVICE_INTERNAL_PASSTHROUGH_PORT`. Specifies the port of the helper server that routes passthrough connections.  The default is `10447`.
@@ -74,9 +74,9 @@ The NGINX Plus Router includes the following additional environment variables:
 
 ## Annotations
 
-The NGINX Plus Router supports the following annotations:
+The NGINX Router supports the following annotations:
 * `nginx.router.openshift.io/balance`. Configures a load balancing method. The supported values are `round_robin`, `least_conn` and `ip_hash`. The default values is configured using `ROUTER_LOAD_BALANCE_ALGORITHM` or `ROUTER_TCP_BALANCE_SCHEME` environment variables.
-* `nginx.router.openshift.io/keepalive`. Activates the cache for connections between NGINX Plus and upstream servers. The default is `0`, which means the cache is not activated. Not applicable for passthrough routes. See http://nginx.org/en/docs/http/ngx_http_upstream_module.html#keepalive for more details.
+* `nginx.router.openshift.io/keepalive`. Activates the cache for connections between NGINX and upstream servers. The default is `0`, which means the cache is not activated. Not applicable for passthrough routes. See http://nginx.org/en/docs/http/ngx_http_upstream_module.html#keepalive for more details.
 * `nginx.router.openshift.io/websocket`. Enables Websocket. The default is `false`.
 * `nginx.router.openshift.io/grpc`. Enables gRPC. The default is `false`.
 
@@ -86,17 +86,17 @@ Additional annotations are available in the [TCP/UDP Load Balancing Extension](#
 
 If edge termination is enabled for a host in one route, it will be enabled in all other routes that reference that host as well. Thus, you only need to configure edge termination in one route. This behavior is different from the default Router behavior, where you would have to enable edge termination in every route.
 
-If you still want to configure edge termination in every route that reference a particular host, please note that for all those routes the NGINX Plus Router will use edge termination settings, such as termination policy and the certificate, from a route with a name that is alphabetically last among those routes.
+If you still want to configure edge termination in every route that reference a particular host, please note that for all those routes the Router will use edge termination settings, such as termination policy and the certificate, from a route with a name that is alphabetically last among those routes.
 
 ## TCP/UDP Load Balancing Extension
 
-This section describes the configuration, features, and limitations of the TCP/UDP load balancing extension. The extension is specific to the NGINX Plus Router and not supported by other routers. For a demonstration, see the [TCP/UDP Load Balancing](../examples/tcp-udp) example.
+This section describes the configuration, features, and limitations of the TCP/UDP load balancing extension. The extension is specific to the Router and not supported by other routers. For a demonstration, see the [TCP/UDP Load Balancing](../examples/tcp-udp) example.
 
 ### Configuration
 
-The NGINX Plus router supports TCP/UDP load balancing through the following annotations:
+The NGINX Router supports TCP/UDP load balancing through the following annotations:
 * `nginx.router.openshift.io/protocol`. Enables TCP or UDP load balancing. The accepted values are `tcp` or `udp`.
-* `nginx.router.openshift.io/port`. Specifies the port for TCP and UDP load balancing for NGINX Plus to listen on. Notes:
+* `nginx.router.openshift.io/port`. Specifies the port for TCP and UDP load balancing for NGINX to listen on. Notes:
     *  The specified port is not checked against the ports specified in other routes. As a result, port conflicts between routes may occur. Make sure to use unique ports per route.
     *  You can use the same port in two routes, but only if one of them is a TCP route and the other one is a UDP route.
     *  Make sure to open the specified port in the firewall for the protocol specified in the nginx.router.openshift.io/protocol annotation on every node where the Router is running. You can use iptables or firewall-cmd. For example, to open port 5353 for TCP traffic, run:
@@ -173,7 +173,7 @@ spec:
 
 ### Limitations
 
-NGINX Plus Router doesn’t allow load balancing TCP/UDP on standard HTTP ports, or any ports used for internal routing. The table below shows these ports along with the environment variables that could override them:
+The NGINX Router doesn't allow load balancing TCP/UDP on standard HTTP ports, or any ports used for internal routing. The table below shows these ports along with the environment variables that could override them:
 
 | Default Value | Environment Variable |
 | ------------- | ------------- |

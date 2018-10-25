@@ -4,7 +4,7 @@ Describe the use case and detail of the change. If this PR addresses an issue on
 ### Checklist
 Before creating a PR, run through this checklist and mark each as complete.
 
-- [ ] I have read the [CONTRIBUTING](https://github.com/nginxinc/nginx-plus-router/blob/master/CONTRIBUTING.md) guide
+- [ ] I have read the [CONTRIBUTING](https://github.com/nginxinc/nginx-openshift-router/blob/master/CONTRIBUTING.md) guide
 - [ ] I have proven my fix is effective or that my feature works
 - [ ] I have updated necessary documentation
 - [ ] I have rebased my branch onto master
