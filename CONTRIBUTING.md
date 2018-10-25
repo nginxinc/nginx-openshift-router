@@ -1,6 +1,6 @@
 # Contributing Guidelines
 
-The following is a set of guidelines for contributing to the NGINX Plus OpenShift Router. We really appreciate that you are considering contributing!
+The following is a set of guidelines for contributing to the NGINX OpenShift Router. We really appreciate that you are considering contributing!
 
 #### Table Of Contents
 
@@ -20,9 +20,9 @@ We will have a public forum soon where you can come and ask questions and have a
 
 ## Getting Started
 
-Follow our [Installation Guide](https://github.com/nginxinc/nginx-plus-router/blob/master/docs/nginx-plus-router-install.md) to get the NGINX Plus Router up and running.
+Follow our [NGINX](docs/nginx-oss-router-install.md) or [NGINX Plus](docs/nginx-plus-router-install.md) Installation Guides to get the NGINX Router up and running.
 
-Read the [documentation](https://github.com/nginxinc/nginx-plus-router/tree/master/docs) and [configuration](https://github.com/nginxinc/nginx-plus-router/tree/master/examples) examples.
+Read the [documentation](docs) and [configuration](examples) examples.
 
 ## Contributing
 
@@ -37,7 +37,7 @@ To suggest an enhancement, please create an issue on GitHub with the label `enha
 ### Open a Pull Request
 
 * Fork the repo, create a branch, submit a PR when your changes are tested and ready for review
-* Fill in [our pull request template](https://github.com/nginxinc/nginx-plus-router/blob/master/.github/PULL_REQUEST_TEMPLATE.md)
+* Fill in [our pull request template](https://github.com/nginxinc/nginx-openshift-router/blob/master/.github/PULL_REQUEST_TEMPLATE.md)
 
 Note: if you’d like to implement a new feature, please consider creating a feature request issue first to start a discussion about the feature.
 

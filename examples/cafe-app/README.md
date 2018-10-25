@@ -1,12 +1,12 @@
 # Cafe App Example
 
-In this example we deploy the NGINX Plus Router, a simple web application and then expose that application using the Router.
+In this example we deploy the NGINX OpenShift Router, a simple web application and then expose that application using the Router.
 
 ## Running the Example
 
-## 1. Deploy the NGINX Plus Router
+## 1. Deploy the NGINX Router
 
-1. Follow the installation instructions for [NGINX Plus](../../docs/nginx-plus-router-install.md).
+1. Follow the installation instructions for [NGINX](../../docs/nginx-oss-router-install.md) or [NGINX Plus](../../docs/nginx-plus-router-install.md).
 
 1. Save the public IP address of the node where the Router is running into a shell variable:
     ```
@@ -52,6 +52,6 @@ certificate and the --resolve option to set the Host header of a request with `c
     ...
     ```
 
-1. Open the live activity monitoring dashboard:
+1. For the NGINX Plus Router, open the live activity monitoring dashboard:
     1. Follow the [instructions](../../docs/nginx-plus-router-install.md#4-Access-the-Live-Activity-Monitoring-Dashboard) to access the dashboard. 
     1. If you go to the Upstream tab, you'll see: ![dashboard](dashboard.png)
