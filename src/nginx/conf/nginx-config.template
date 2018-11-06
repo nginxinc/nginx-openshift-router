@@ -8,14 +8,17 @@
 {{ $httpsPort := env "ROUTER_SERVICE_HTTPS_PORT" "443" }}
 {{ $passthroughPort := env "ROUTER_SERVICE_PASSTHROUGH_PORT" "443" }}
 {{ $logLevel := firstMatch "info|notice|warn|error|crit|alert|emerg" (env "ROUTER_LOG_LEVEL") "warn" }}
-worker_processes  auto;
+worker_processes {{ env "WORKER_PROCESSES" "auto" }};
+{{ with $cpuAffinity := env "WORKER_CPU_AFFINITY" }}
+worker_cpu_affinity {{ $cpuAffinity }};
+{{ end }}
 {{ with $syslogAddress := env "ROUTER_SYSLOG_ADDRESS" }}
 error_log syslog:server={{ $syslogAddress }},facility={{env "ROUTER_LOG_FACILITY" "local1"}} {{ $logLevel }}; 
 {{ else }}
 error_log  /var/lib/nginx/log/error.log {{ $logLevel }};
 {{ end }} 
 pid        /var/lib/nginx/run/nginx.pid;
-worker_rlimit_nofile 8192;
+worker_rlimit_nofile {{ env "WORKER_RLIMIT_NOFILE" "8192" }};
 worker_shutdown_timeout {{ env "ROUTER_DEFAULT_TUNNEL_TIMEOUT" "1h" }};
 
 events {
@@ -47,6 +50,7 @@ http {
   uwsgi_temp_path /var/lib/nginx/cache/uwsgi_temp;
   scgi_temp_path /var/lib/nginx/cache/scgi_temp;
 
+  keepalive_requests {{ env "KEEPALIVE_REQUESTS" "100" }};
   keepalive_timeout {{ env "ROUTER_SLOWLORIS_HTTP_KEEPALIVE" "300s" }};
 
   client_body_timeout {{ env "ROUTER_DEFAULT_CLIENT_TIMEOUT" "30s" }};
