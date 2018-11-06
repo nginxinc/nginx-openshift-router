@@ -71,6 +71,11 @@ The NGINX Router includes the following additional environment variables:
 * `ROUTER_SYSLOG_FORMAT_FOR_INTERNAL_PASSTHROUGH`. Specifies the log format for the internal server that routes passthrough connections.
 * `ROUTER_SERVICE_503_SERVER_PORT`. Specifies the port of the helper server, which serves 503 error pages.
 * `ROUTER_SERVICE_PASSTHROUGH_PORT`. Specifies the port of the passthrough server -- the server, which handles both HTTPS and passthrough connections, before forwarding them to the Router internal helper servers. The default is `443` and equal to `ROUTER_SERVICE_HTTPS_PORT`. However, `ROUTER_SERVICE_PASSTHROUGH_PORT` and `ROUTER_SERVICE_HTTPS_PORT` can be different. In that case the server on the passthrough port will only handle passthrough connections and the server on the HTTPS port will only handle HTTPS connections.
+* `KEEPALIVE_REQUESTS`. Specifies the maximum number of requests NGINX can serve through a single keep-alive connection. The default value is `100`.
+* `WORKER_PROCESSES`. Specifies the number of worker processes, and is used to help tune NGINX performance. To see the list of factors that influences the optimal value, see [our documentation](http://nginx.org/en/docs/ngx_core_module.html#worker_processes). It is considered a good start to set this value to the number of CPU cores of the node in which the router is running. Leaving this value to default will allow NGINX to try and autodetect it.
+* `WORKER_CPU_AFFINITY`. Tied closely with `WORKER_PROCESSES`, this value binds worker processes to the sets of CPUs. Each CPU set is represented by a bitmask of allowed CPUs. See the [documentation](http://nginx.org/en/docs/ngx_core_module.html#worker_cpu_affinity) for examples of how to use it.
+* `WORKER_RLIMIT_NOFILE`. Specifies the maximum number of open files for worker processes. The default value is `8192`, but it can be useful to increase this number when NGINX is handling a large number of connections.
+
 
 ## Annotations
 
