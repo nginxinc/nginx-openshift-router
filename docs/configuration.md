@@ -39,8 +39,8 @@ The NGINX Router supports the following standard Router environment variables:
 
 The following standard environment variables are supported, but have some differences comparing with the default Router:
 * `DEFAULT_CERTIFICATE_DIR`. The default value is `/etc/pki/tls/private`.
-* `ROUTER_TCP_BALANCE_SCHEME`. Supported values are `round_robin`, `least_conn` and `ip_hash`. The default is `round_robin`.
-* `ROUTER_LOAD_BALANCE_ALGORITHM`. Supported values are `round_robin`, `least_conn` and `ip_hash`. The default is `round_robin`.
+* `ROUTER_TCP_BALANCE_SCHEME`. Specifies the load balancing algorithm for TCP/UDP and passthrough upstreams. Supported values are `round_robin`, `random`, `random_two`, `least_conn`, `ip_hash` and `least_time` (NGINX Plus). The default is `random_two`.
+* `ROUTER_LOAD_BALANCE_ALGORITHM`. Specifies the load balancing algorithm for HTTP upstreams. Supported values are `round_robin`, `random`, `random_two`, `least_conn`, `ip_hash` and `least_time` (NGINX Plus). The default is `random_two`.
 * `ROUTER_METRICS_TYPE`. The value must be empty.
 * `ROUTER_SYSLOG_FORMAT`. Specifies the log format for a server that routes HTTP(s) traffic.
 * `TEMPLATE_FILE`. The default value is `/var/lib/nginx/conf/nginx-config.template`.
@@ -77,10 +77,18 @@ The NGINX Router includes the following additional environment variables:
 * `WORKER_RLIMIT_NOFILE`. Specifies the maximum number of open files for worker processes. The default value is `8192`, but it can be useful to increase this number when NGINX is handling a large number of connections.
 
 
+The NGINX Router with NGINX Plus offers the additional following environment variables:
+
+* `ROUTER_HTTP_BALANCE_PARAMETERS`. Modifies the `ROUTER_LOAD_BALANCE_ALGORITHM` default environment variable and the `nginx.router.openshift.io/balance` annotation to specify load balancing functionality.
+* `ROUTER_TCP_BALANCE_PARAMETERS`. Modifies the `ROUTER_TCP_BALANCE_SCHEME` default environment variable and the `nginx.router.openshift.io/balance` annotation to specify load balancing functionality.
+
+For more information on specifying load balancing with `ROUTER_HTTP_BALANCE_PARAMETERS` and `ROUTER_TCP_BALANCE_PARAMETERS`, see the [Fine-Tuning Load Balancing with NGINX Plus](#fine-tuning-load-balancing-methods-with-nginx-plus) section.
+
 ## Annotations
 
 The NGINX Router supports the following annotations:
-* `nginx.router.openshift.io/balance`. Configures a load balancing method. The supported values are `round_robin`, `least_conn` and `ip_hash`. The default values is configured using `ROUTER_LOAD_BALANCE_ALGORITHM` or `ROUTER_TCP_BALANCE_SCHEME` environment variables.
+* `nginx.router.openshift.io/balance`. Configures a load balancing method. The supported values are `round_robin`, `least_conn`, `random`, `random_two`, `ip_hash` and `least_time` (NGINX Plus). The default value is configured using `ROUTER_LOAD_BALANCE_ALGORITHM` or `ROUTER_TCP_BALANCE_SCHEME` environment variables. `random_two` defaults to `random two least_conn` in the NGINX configuration.
+* `nginx.router.openshift.io/balance-parameters`. Specific to NGINX Plus. Modifies the load balancing algorithm to specify more precise functionality. See [Fine-Tuning Load Balancing with NGINX Plus](#fine-tuning-load-balancing-methods-with-nginx-plus) for more information on tuning NGINX load balancing.
 * `nginx.router.openshift.io/keepalive`. Activates the cache for connections between NGINX and upstream servers. The default is `0`, which means the cache is not activated. Not applicable for passthrough routes. See http://nginx.org/en/docs/http/ngx_http_upstream_module.html#keepalive for more details.
 * `nginx.router.openshift.io/websocket`. Enables Websocket. The default is `false`.
 * `nginx.router.openshift.io/grpc`. Enables gRPC. The default is `false`.
@@ -95,7 +103,7 @@ If you still want to configure edge termination in every route that reference a 
 
 ## TCP/UDP Load Balancing Extension
 
-This section describes the configuration, features, and limitations of the TCP/UDP load balancing extension. The extension is specific to the Router and not supported by other routers. For a demonstration, see the [TCP/UDP Load Balancing](../examples/tcp-udp) example.
+This section describes the configuration, features, and limitations of the TCP/UDP load balancing extension. The extension is specific to the NGINX Router and not supported by other routers. For a demonstration, see the [TCP/UDP Load Balancing](../examples/tcp-udp) example.
 
 ### Configuration
 
@@ -190,3 +198,23 @@ The NGINX Router doesn't allow load balancing TCP/UDP on standard HTTP ports, or
 | 10446 | ROUTER_SERVICE_UNREACHABLE_PORT |
 | 10447 | ROUTER_SERVICE_INTERNAL_PASSTHROUGH_PORT |
 | 1936 | STATS_PORT |
+
+## Fine-Tuning Load Balancing Methods with NGINX Plus
+
+This section describes the allowed values for the HTTP, TCP/UDP, and passthrough upstream load balancing algorithms. These values are specific to the NGINX Plus Router and not supported by other routers.
+
+When specifying the load balancing algorithm `least_time`, for example, the router will default to `least_time header` within the NGINX configuration. It is sometimes necessary, however, to specify exactly how an algorithm will act, perhaps with `least_time first_byte`. This section describes how that mechanism is configured within the NGINX Router with NGINX Plus.
+
+### HTTP
+
+HTTP load balancing is configured with the `nginx.router.openshift.io/balance` annotation but defaults to the `ROUTER_LOAD_BALANCE_ALGORITHM` environment variable. This algorithm can be adjusted to support more fine-tuned load balancing algorithms using the `nginx.router.openshift.io/balance-parameters`, which defaults to the `ROUTER_HTTP_BALANCE_PARAMETERS` environment variable.
+
+* `random_two`: Supported values are `least_conn`, `least_time=header` and `least_time=last_byte`. Default value is `random two least_conn`.
+* `least_time`: Supported values are `header`, `last_byte`, `header infight` and `last_byte inflight`. Default value is `least_time header`.
+
+### TCP/UDP and Passthrough
+
+TCP/UDP as well as passthrough load balancing is configured with the `nginx.router.openshift.io/balance` annotation but defaults to the `ROUTER_TCP_BALANCE_SCHEME` environment variable. This algorithm can be adjusted to support more fine-tuned load balancing algorithms using the `nginx.router.openshift.io/balance-parameters`, which defaults to the `ROUTER_TCP_BALANCE_PARAMETERS` environment variable.
+
+* `random_two`: Supported values are `least_conn`, `least_time=connect`, `least_time=first_byte` and `least_time=last_byte`. Default value is `random two least_conn`.
+* `least_time`: Supported values are `connect`, `first_byte`, `last_byte`, `connect inflight`, `first_byte inflight` and `last_byte inflight`. Default value is `least_time connect`.
