@@ -16,7 +16,7 @@ NGINX Router is built on top of OpenShift Template Router. Below are the key fea
 * **Latest NGINX features.** We are also excited to bring our new features, such as native support for gRPC load balancing, into the OpenShift Router. As new features are made available in NGINX and NGINX Plus, they can be incorporated into the Router’s capabilities. 
 * **Support for TCP/UDP load balancing.** NGINX Router brings support for load balancing TCP/UDP applications, including supporting edge TLS termination and re-encryption for TCP, via a TCP/UDP load balancing [extension](docs/configuration.md/#tcpudp-load-balancing-extension).
 * **Support for Prometheus**. NGINX Router can optionally expose metrics ready to be collected by [Prometheus](https://prometheus.io/).
-* **Advanced features of NGINX Plus.** When NGINX Router is used with NGINX Plus, you get the additional benefits of NGINX Plus, such as its monitoring API, dashboard and extended number of metrics for Prometheus.
+* **Advanced features of NGINX Plus.** When NGINX Router is used with NGINX Plus, you get the additional benefits of NGINX Plus, such as its monitoring API, dashboard, extended number of metrics for Prometheus and more [fine-tuned](docs/configuration.md#fine-tuning-load-balancing-methods-with-nginx-plus) control over load balancing methods.
 
 ## How To Get Started
 

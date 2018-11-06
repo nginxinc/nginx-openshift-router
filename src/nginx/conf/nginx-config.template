@@ -146,14 +146,19 @@ http {
     }
   }
 
-{{- range $cfgHost, $configs := $httpAliases }}
+# HTTP Upstreams
+{{range $cfgHost, $configs := $httpAliases }}
   {{- range $cfg := $configs }}
     {{- if not (and (firstMatch "tcp|udp" (index $cfg.Annotations "nginx.router.openshift.io/protocol")) (isInteger (index $cfg.Annotations "nginx.router.openshift.io/port"))) }}
   upstream be_{{$cfg.Namespace}}_{{$cfg.Name}} {
-      {{ with $balanceAlgo := firstMatch "round_robin|least_conn|ip_hash" (index $cfg.Annotations "nginx.router.openshift.io/balance") (env "ROUTER_LOAD_BALANCE_ALGORITHM") }}
-        {{ if ne $balanceAlgo "round_robin" }}
+      {{ with $balanceAlgo := firstMatch "round_robin|random|random_two|least_conn|ip_hash" (index $cfg.Annotations "nginx.router.openshift.io/balance") (env "ROUTER_LOAD_BALANCE_ALGORITHM") "random_two" }}
+        {{ if eq $balanceAlgo "random_two" }}
+    random two least_conn;
+        {{ else if ne $balanceAlgo "round_robin" }}
     {{ $balanceAlgo }};
         {{ end }}
+      {{ else }}
+    random two least_conn;
       {{ end }}
       {{ if gt $cfg.ActiveEndpoints 0 }}
         {{- range $serviceUnitName, $weight := $cfg.ServiceUnitNames }}
@@ -373,12 +378,16 @@ stream {
   {{- range $cfgIdx, $cfg := .State }}
     {{ if eq $cfg.TLSTermination "passthrough" }}
   upstream be_passthrough_{{$cfg.Namespace}}_{{$cfg.Name}} {
-      {{ with $balanceAlgo := firstMatch "round_robin|least_conn|ip_hash" (index $cfg.Annotations "nginx.router.openshift.io/balance") (env "ROUTER_TCP_BALANCE_SCHEME") }}
+      {{ with $balanceAlgo := firstMatch "round_robin|random|random_two|least_conn|ip_hash" (index $cfg.Annotations "nginx.router.openshift.io/balance") (env "ROUTER_TCP_BALANCE_SCHEME") "random_two" }}
         {{ if eq $balanceAlgo "ip_hash" }}
     hash $remote_addr consistent;
+        {{ else if eq $balanceAlgo "random_two" }}
+    random two least_conn;
         {{ else if ne $balanceAlgo "round_robin" }}
     {{ $balanceAlgo }};
         {{ end }}
+      {{ else }}
+    random two least_conn;
       {{ end }}
       {{ if gt $cfg.ActiveEndpoints 0 }}
         {{- range $serviceUnitName, $weight := $cfg.ServiceUnitNames }}
@@ -426,12 +435,16 @@ stream {
       {{- if isInteger $streamPort }}
         {{ if not (firstMatch (index $cfg.Annotations "nginx.router.openshift.io/port") (env "ROUTER_SERVICE_HTTPS_PORT" "443") (env "ROUTER_SERVICE_PASSTHROUGH_PORT" "443") (env "ROUTER_SERVICE_HTTP_PORT" "80") (env "ROUTER_SERVICE_SNI_PORT" "10444") (env "ROUTER_SERVICE_503_SERVER_PORT" "10445") (env "ROUTER_SERVICE_UNREACHABLE_PORT" "10446") (env "ROUTER_SERVICE_INTERNAL_PASSTHROUGH_PORT" "10447") "1936") }}
   upstream be_stream_{{$cfg.Namespace}}_{{$cfg.Name}} {
-          {{ with $balanceAlgo := firstMatch "round_robin|least_conn|ip_hash" (index $cfg.Annotations "nginx.router.openshift.io/balance") (env "ROUTER_TCP_BALANCE_SCHEME") }}
+          {{ with $balanceAlgo := firstMatch "round_robin|random|random_two|least_conn|ip_hash" (index $cfg.Annotations "nginx.router.openshift.io/balance") (env "ROUTER_TCP_BALANCE_SCHEME") "random_two" }}
             {{ if eq $balanceAlgo "ip_hash" }}
     hash $remote_addr consistent;
+            {{ else if eq $balanceAlgo "random_two" }}
+    random two least_conn;
             {{ else if ne $balanceAlgo "round_robin" }}
     {{ $balanceAlgo }};
             {{ end }}
+          {{ else }}
+    random two least_conn;
           {{ end }}
           {{ if gt $cfg.ActiveEndpoints 0 }}
             {{- range $serviceUnitName, $weight := $cfg.ServiceUnitNames }}
