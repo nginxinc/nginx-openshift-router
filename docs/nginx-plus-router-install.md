@@ -48,9 +48,17 @@
 
 ## 4. Access the Live Activity Monitoring Dashboard
 
-1. By default, the NGINX Plus status dashboard is available via port 1936 of the node where the Router is running (you can change this port with the `STATS_PORT` env variable). To access the dashboard outside of the node, you need to add an entry to the IPtables rules for that node:
+1. By default, the NGINX stub status page is available via port 1936 on each of the infra nodes where the Router is running (you can change this port with the `STATS_PORT` env variable). To access the page outside of the node, you need to add an entry to the IPtables for firewalld rules for that node:
+    
+    IPtables
     ```
-    $ sudo iptables -I OS_FIREWALL_ALLOW -p tcp -s <ip range> -m tcp --dport 1936 -j ACCEPT
+    $ sudo iptables -I OS_FIREWALL_ALLOW -p tcp -s <ip range> -m tcp --dport 1936 -j ACCEPT 
+    ```
+    
+    Firewalld
+    ```
+    $ sudo firewall-cmd --zone=public --permanent --add-port=1936/tcp
+    $ sudo firewall-cmd --reload
     ```
 1. Open your browser at `http://<node-ip>:1936/dashboard.html` to access the dashboard.
 
