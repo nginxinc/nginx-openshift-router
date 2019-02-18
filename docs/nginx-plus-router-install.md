@@ -48,7 +48,7 @@
 
 ## 4. Access the Live Activity Monitoring Dashboard
 
-1. By default, the NGINX stub status page is available via port 1936 on each of the infra nodes where the Router is running (you can change this port with the `STATS_PORT` env variable). To access the page outside of the node, you need to add an entry to the IPtables for firewalld rules for that node:
+1. By default, the NGINX stub status page is available via port 1936 on each of the infra nodes where the Router is running (you can change this port with the `STATS_PORT` env variable). To access the page outside of the nodes, open the port in the firewall using **iptables** or **firewall-cmd** on those nodes:
     
     IPtables
     ```
