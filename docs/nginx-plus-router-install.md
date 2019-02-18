@@ -50,7 +50,7 @@
 
 1. By default, the NGINX stub status page is available via port 1936 on each of the infra nodes where the Router is running (you can change this port with the `STATS_PORT` env variable). To access the page outside of the nodes, open the port in the firewall using **iptables** or **firewall-cmd** on those nodes:
     
-    IPtables
+    iptables:
     ```
     $ sudo iptables -I OS_FIREWALL_ALLOW -p tcp -s <ip range> -m tcp --dport 1936 -j ACCEPT 
     ```
