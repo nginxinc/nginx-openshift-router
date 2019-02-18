@@ -427,7 +427,7 @@ stream {
         {{- range $serviceUnitName, $weight := $cfg.ServiceUnitNames }}
           {{- with $serviceUnit := index $.ServiceUnits $serviceUnitName }}
             {{- range $idx, $endpoint := endpointsForAlias $cfg $serviceUnit }}
-    server {{$endpoint.IP}}:{{$endpoint.Port}};
+    server {{$endpoint.IP}}:{{$endpoint.Port}} {{ if eq $weight 0 }}down{{ else }}weight={{ $weight }}{{ end }};
             {{ end -}}
           {{ end -}}
         {{ end -}}
@@ -495,7 +495,7 @@ stream {
             {{- range $serviceUnitName, $weight := $cfg.ServiceUnitNames }}
               {{- with $serviceUnit := index $.ServiceUnits $serviceUnitName }}
                 {{- range $idx, $endpoint := endpointsForAlias $cfg $serviceUnit }}
-    server {{$endpoint.IP}}:{{$endpoint.Port}};
+    server {{$endpoint.IP}}:{{$endpoint.Port}} {{ if eq $weight 0 }}down{{ else }}weight={{ $weight }}{{ end }};
                 {{ end -}}
               {{ end -}}
             {{ end -}}
