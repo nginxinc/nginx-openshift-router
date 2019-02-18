@@ -184,7 +184,7 @@ http {
         # endpoints of {{$serviceUnitName}}
           {{- with $serviceUnit := index $.ServiceUnits $serviceUnitName }}
             {{- range $idx, $endpoint := endpointsForAlias $cfg $serviceUnit }}
-    server {{$endpoint.IP}}:{{$endpoint.Port}} weight={{$weight}};
+    server {{$endpoint.IP}}:{{$endpoint.Port}} {{ if eq $weight 0 }}down{{ else }}weight={{ $weight }}{{ end }};
             {{ end -}}
           {{ end }}
         {{ end -}}
