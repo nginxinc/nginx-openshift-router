@@ -55,7 +55,7 @@
     $ sudo iptables -I OS_FIREWALL_ALLOW -p tcp -s <ip range> -m tcp --dport 1936 -j ACCEPT 
     ```
     
-    Firewalld
+    firewall-cmd:
     ```
     $ sudo firewall-cmd --zone=public --permanent --add-port=1936/tcp
     $ sudo firewall-cmd --reload
