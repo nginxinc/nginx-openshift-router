@@ -62,6 +62,9 @@
     ```
 1. Open your browser at `http://<node-ip>:1936/dashboard.html` to access the dashboard.
 
+    **Note**: 
+    * For simplicity, the firewall-cmd commands listed above do not configure the source IP range of the allowed traffic. It is recommended that you configure the source IP range to protect the [stub status page|dashboard] similarly to the iptables command
+
 ## 5. Support for Prometheus Monitoring
 
 If you are using [Prometheus](https://prometheus.io/), you can deploy the [NGINX Prometheus Exporter](https://github.com/nginxinc/nginx-prometheus-exporter) with the NGINX Plus Router to export the NGINX Plus metrics into Prometheus. To add the exporter to the Router:
