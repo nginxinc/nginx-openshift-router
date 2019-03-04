@@ -60,6 +60,9 @@
     ```
 1. Open your browser at `http://<node-ip>:1936/stub_status` to access the stub status page. 
 
+    **Note**: 
+    * For simplicity, the firewall-cmd commands listed above do not configure the source IP range of the allowed traffic. It is recommended that you configure the source IP range to protect the [stub status page|dashboard] similarly to the iptables command
+
 ## 5. Support for Prometheus Monitoring
 
 If you are using [Prometheus](https://prometheus.io/), you can deploy the [NGINX Prometheus Exporter](https://github.com/nginxinc/nginx-prometheus-exporter) with the NGINX Router to export the NGINX metrics into Prometheus. To add the exporter to the Router:
