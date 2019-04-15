@@ -240,7 +240,11 @@ http {
       grpc_set_header X-Forwarded-Proto $scheme;
 
         {{ if eq $cfg.TLSTermination "reencrypt" }}
+          {{ with $ssl_name := index $cfg.Annotations "nginx.router.openshift.io/proxy_ssl_name" }}
+      grpc_ssl_name {{ $ssl_name }};
+          {{ else }}
       grpc_ssl_name {{ $cfg.Host }};
+          {{ end }}
           {{- if gt (len (index $cfg.Certificates (printf "%s_pod" $cfg.Host)).Contents) 0 }}
       grpc_ssl_trusted_certificate {{ $workingDir }}/cacerts/{{$cfgIdx}}.pem;
       grpc_ssl_verify on;
@@ -277,7 +281,11 @@ http {
       proxy_set_header X-Forwarded-Proto $scheme;
 
         {{ if eq $cfg.TLSTermination "reencrypt" }}
+          {{ with $ssl_name := index $cfg.Annotations "nginx.router.openshift.io/proxy_ssl_name" }}
+      proxy_ssl_name {{ $ssl_name }};
+          {{ else }}
       proxy_ssl_name {{ $cfg.Host }};
+          {{ end }}
           {{- if gt (len (index $cfg.Certificates (printf "%s_pod" $cfg.Host)).Contents) 0 }}
       proxy_ssl_trusted_certificate {{ $workingDir }}/cacerts/{{$cfgIdx}}.pem;
       proxy_ssl_verify on;
