@@ -92,6 +92,7 @@ The NGINX Router supports the following annotations:
 * `nginx.router.openshift.io/keepalive`. Activates the cache for connections between NGINX and upstream servers. The default is `0`, which means the cache is not activated. Not applicable for passthrough routes. See http://nginx.org/en/docs/http/ngx_http_upstream_module.html#keepalive for more details.
 * `nginx.router.openshift.io/websocket`. Enables Websocket. The default is `false`.
 * `nginx.router.openshift.io/grpc`. Enables gRPC. The default is `false`.
+* `nginx.router.openshift.io/proxy_ssl_name`. Specifies the server name for verifying the proxied server certificate. Only used when re-encryption is enabled. The default value is the host of the route.
 
 Additional annotations are available in the [TCP/UDP Load Balancing Extension](#tcpudp-load-balancing-extension).
 
