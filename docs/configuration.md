@@ -75,7 +75,7 @@ The NGINX Router includes the following additional environment variables:
 * `WORKER_PROCESSES`. Specifies the number of worker processes, and is used to help tune NGINX performance. To see the list of factors that influences the optimal value, see [our documentation](http://nginx.org/en/docs/ngx_core_module.html#worker_processes). It is considered a good start to set this value to the number of CPU cores of the node in which the router is running. Leaving this value to default will allow NGINX to try and autodetect it.
 * `WORKER_CPU_AFFINITY`. Tied closely with `WORKER_PROCESSES`, this value binds worker processes to the sets of CPUs. Each CPU set is represented by a bitmask of allowed CPUs. See the [documentation](http://nginx.org/en/docs/ngx_core_module.html#worker_cpu_affinity) for examples of how to use it.
 * `WORKER_RLIMIT_NOFILE`. Specifies the maximum number of open files for worker processes. The default value is `8192`, but it can be useful to increase this number when NGINX is handling a large number of connections.
-
+* `ROUTER_ENABLE_UNSAFE_ANNOTATIONS` Enables the unsafe annotations. The unsafe annotations are not validated by the Router and could lead to invalid NGINX configuration. The default is `false`.
 
 The NGINX Router with NGINX Plus offers the additional following environment variables:
 
@@ -93,6 +93,16 @@ The NGINX Router supports the following annotations:
 * `nginx.router.openshift.io/websocket`. Enables Websocket. The default is `false`.
 * `nginx.router.openshift.io/grpc`. Enables gRPC. The default is `false`.
 * `nginx.router.openshift.io/proxy_ssl_name`. Specifies the server name for verifying the proxied server certificate. Only used when re-encryption is enabled. The default value is the host of the route.
+
+The NGINX Router supports the following unsafe annotations:
+
+* `unsafe.nginx.router.openshift.io/server-snippets`. Sets custom snippets in the server context of the generated NGINX config. If multiple routes are created for the same host and all have this annotation present, the annotation of the primary route will be used. The primary route is a route which name is the alphabetically last among all routes. If some routes have TLS termination enabled, the primary route is a route which name is the alphabetically last among all TLS-enabled routes. Not available for passthrough routes.
+* `unsafe.nginx.router.openshift.io/location-snippets`. Sets custom snippets in the location context of the generated NGINX config. Not available for passthrough and TCP/UDP routes.
+
+**Notes**: 
+* The Router doesn't validate the unsafe annotations, which might lead to invalid NGINX configuration. Check the Router logs to makes sure that the annotations have been successfully applied.
+* Requires the `ROUTER_ENABLE_UNSAFE_ANNOTATIONS` environment variable set to `true`.
+
 
 Additional annotations are available in the [TCP/UDP Load Balancing Extension](#tcpudp-load-balancing-extension).
 

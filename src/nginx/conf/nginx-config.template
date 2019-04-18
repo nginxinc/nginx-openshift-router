@@ -229,6 +229,12 @@ http {
       {{ end }}
     {{ end }}
 
+    {{ if isTrue (env "ROUTER_ENABLE_UNSAFE_ANNOTATIONS") }}
+      {{ with $value := index $primaryCfg.Annotations "unsafe.nginx.router.openshift.io/server-snippets" }}
+    {{ $value }}
+      {{ end }}
+    {{ end }}
+
     {{ range $cfgIdx, $cfg := $configs }}
     # this path belongs to the {{ $cfgIdx }} route
     location {{ if eq $cfg.Path ""}}/{{ else }}{{$cfg.Path}}{{ end }} {
@@ -300,6 +306,12 @@ http {
       proxy_pass      https://be_{{$cfg.Namespace}}_{{$cfg.Name}};
         {{ else }}
       proxy_pass      http://be_{{$cfg.Namespace}}_{{$cfg.Name}};
+        {{ end }}
+      {{ end }}
+
+      {{ if isTrue (env "ROUTER_ENABLE_UNSAFE_ANNOTATIONS") }}
+        {{ with $value := index $cfg.Annotations "unsafe.nginx.router.openshift.io/location-snippets" }}
+      {{ $value }}
         {{ end }}
       {{ end }}
     }
@@ -522,6 +534,12 @@ stream {
     access_log /var/lib/nginx/log/stream_access.log stream;
           {{ end }}
     proxy_pass be_stream_{{$cfg.Namespace}}_{{$cfg.Name}};
+
+          {{ if isTrue (env "ROUTER_ENABLE_UNSAFE_ANNOTATIONS") }}
+            {{ with $value := index $cfg.Annotations "unsafe.nginx.router.openshift.io/server-snippets" }}
+    {{ $value }}
+            {{ end }}
+          {{ end }}
   }
         {{ end -}}
       {{ end -}}
