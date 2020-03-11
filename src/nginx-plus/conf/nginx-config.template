@@ -38,7 +38,7 @@ http {
 {{ with $syslogAddress := env "ROUTER_SYSLOG_ADDRESS" }}
   access_log syslog:server={{ $syslogAddress }},facility={{env "ROUTER_LOG_FACILITY" "local1"}},severity={{ $logLevel }} main;
 {{ else }}
-  access_log   /var/lib/nginx/log/access.log  main;
+  access_log   /proc/1/fd/1 main;
 {{ end }}
   sendfile     on;
   tcp_nopush   on;
@@ -411,7 +411,7 @@ stream {
     {{ with $syslogAddress := env "ROUTER_SYSLOG_ADDRESS" }}
     access_log syslog:server={{ $syslogAddress }},facility={{env "ROUTER_LOG_FACILITY" "local1"}},severity={{ $logLevel }} passthrough;
     {{ else }}
-    access_log /var/lib/nginx/log/passthrough_access.log passthrough;
+    access_log /proc/1/fd/1 passthrough;
     {{ end }}
     status_zone passthrough;
     proxy_pass $dest_passthrough;
@@ -478,7 +478,7 @@ stream {
     {{ with $syslogAddress := env "ROUTER_SYSLOG_ADDRESS" }}
     access_log syslog:server={{ $syslogAddress }},facility={{env "ROUTER_LOG_FACILITY" "local1"}},severity={{ $logLevel }} internal_passthrough;
     {{ else }}
-    access_log /var/lib/nginx/log/internal_passthrough_access.log internal_passthrough;
+    access_log /proc/1/fd/1 internal_passthrough;
     {{ end }}
 
     ssl_preread on;
@@ -576,7 +576,7 @@ stream {
           {{ with $syslogAddress := env "ROUTER_SYSLOG_ADDRESS" }}
     access_log syslog:server={{ $syslogAddress }},facility={{env "ROUTER_LOG_FACILITY" "local1"}},severity={{ $logLevel }} stream;
           {{ else }}
-    access_log /var/lib/nginx/log/stream_access.log stream;
+    access_log /proc/1/fd/1 stream;
           {{ end }}
     status_zone {{$streamPort}}_{{$streamProtocol}}_{{$cfg.Name}};
     proxy_pass be_stream_{{$cfg.Namespace}}_{{$cfg.Name}};
