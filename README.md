@@ -1,5 +1,8 @@
 # NGINX OpenShift Router
 
+# This repository has been archived. There will likely be no further development on the project and security vulnerabilities may be unaddressed.
+
+
 This repo includes an implementation of an OpenShift Router based on [NGINX](https://nginx.org) and [NGINX Plus](https://www.nginx.com/products/). 
 
 ## What is the Router?
