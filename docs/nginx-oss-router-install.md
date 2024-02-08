@@ -46,11 +46,22 @@
 
 ## 4. Access the Stub Status Page
 
-1. By default, the NGINX stub status page is available via port 1936 of the node where the Router is running (you can change this port with the `STATS_PORT` env variable). To access the page outside of the node, you need to add an entry to the IPtables rules for that node:
+1. By default, the NGINX stub status page is available via port 1936 on each of the infra nodes where the Router is running (you can change this port with the `STATS_PORT` env variable). To access the page outside of the nodes, open the port in the firewall using **iptables** or **firewall-cmd** on those nodes:
+    
+    iptables:
     ```
     $ sudo iptables -I OS_FIREWALL_ALLOW -p tcp -s <ip range> -m tcp --dport 1936 -j ACCEPT 
     ```
+    
+    firewall-cmd:
+    ```
+    $ sudo firewall-cmd --zone=public --permanent --add-port=1936/tcp
+    $ sudo firewall-cmd --reload
+    ```
 1. Open your browser at `http://<node-ip>:1936/stub_status` to access the stub status page. 
+
+    **Note**: 
+    * For simplicity, the firewall-cmd commands listed above do not configure the source IP range of the allowed traffic. It is recommended that you configure the source IP range to protect the [stub status page|dashboard] similarly to the iptables command
 
 ## 5. Support for Prometheus Monitoring
 
